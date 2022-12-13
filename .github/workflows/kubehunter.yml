@@ -25,10 +25,22 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Install kubectl
-        uses: azure/setup-kubectl@v1      
-        
+        uses: azure/setup-kubectl@v1  
+    id : install   
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with: 
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} 
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }} 
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name clops-daaf-cluster --region us-east-1    
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Deploy kube-hunter to EKS
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          kubectl create ns kube-hunter
+          kubectl config set-context --current --namespace=kube-hunter  
+          kubectl apply -f https://raw.githubusercontent.com/aquasecurity/kube-hunter/master/job.yaml
+          sleep 3
+          kubectl --namespace=kube-hunter logs $(kubectl get pods --namespace=kube-hunter -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep kube-hunter) > kubehunter.txt
+
