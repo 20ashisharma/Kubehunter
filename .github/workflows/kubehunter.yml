@@ -57,6 +57,6 @@ jobs:
          to: ashi.s@cloudifyops.com
          from: github-action@gamil.com
          body: Build job of ${{github.repository}} completed successfully!
-         attachments: '**/*.kubehunter.txt' 
+         attachments: '**.kubehunter.txt' 
    
 
