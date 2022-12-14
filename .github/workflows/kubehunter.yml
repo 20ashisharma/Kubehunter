@@ -44,12 +44,6 @@ jobs:
           kubectl apply -f https://raw.githubusercontent.com/aquasecurity/kube-hunter/master/job.yaml
           sleep 3
           kubectl --namespace=kube-hunter logs $(kubectl get pods --namespace=kube-hunter -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep kube-hunter) > kubehunter.txt
-      - name: testing for path
-        run: |
-          pwd
-          ls -la 
-          ls -la *kubehunter.txt
-          ls -la **/*kubehunter.txt
       - name: Send email
         id: email
         uses: dawidd6/action-send-mail@v3.7.1
@@ -63,6 +57,6 @@ jobs:
          to: ashi.s@cloudifyops.com
          from: github-action@gamil.com
          body: Build job of ${{github.repository}} completed successfully!
-         attachments: '**/*.kubehunter.txt' 
+         attachments: 'kubehunter.txt' 
    
 
