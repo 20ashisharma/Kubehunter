@@ -42,7 +42,7 @@ jobs:
           kubectl create ns kube-hunter
           kubectl config set-context --current --namespace=kube-hunter  
           kubectl apply -f https://raw.githubusercontent.com/aquasecurity/kube-hunter/master/job.yaml
-          sleep 3
+          sleep 13
           kubectl --namespace=kube-hunter logs $(kubectl get pods --namespace=kube-hunter -o go-template --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep kube-hunter) > kubehunter.txt
       - name: Send email
         id: email
